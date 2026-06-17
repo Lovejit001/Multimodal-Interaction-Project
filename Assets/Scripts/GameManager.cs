@@ -59,12 +59,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public RoomButton[] roomButtons;
     public void SelectRoom(int roomID)
     {
         selectedRoom = roomID;
 
-        statusText.text =
-            "Selected Room " + (roomID + 1);
+        for (int i = 0; i < roomButtons.Length; i++)
+        {
+            roomButtons[i].SetSelected(roomButtons[i].roomID == roomID);
+        }
+
+        statusText.text = "Selected Room " + (roomID + 1);
     }
 
     IEnumerator RandomIntruders()
@@ -98,7 +103,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
 
-        LoseGame("Intruder entered!");
+        LoseGame();
     }
 
     public void TryLockRoom(int roomID)
@@ -120,7 +125,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            LoseGame("Wrong room locked!");
+            LoseGame();
         }
     }
 
@@ -129,19 +134,32 @@ public class GameManager : MonoBehaviour
         return selectedRoom;
     }
 
+    public GameObject WinPanel;
     void WinGame()
     {
         gameEnded = true;
-
-        SceneManager.LoadScene("WinScene");
+        WinPanel.SetActive(true);
+        Time.timeScale = 0f;
     }
 
-    void LoseGame(string reason)
+    public GameObject LosePanel;
+
+    public void LoseGame()
     {
         gameEnded = true;
+        LosePanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
 
-        Debug.Log(reason);
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Game");
+    }
 
-        SceneManager.LoadScene("LoseScene");
+    public void MainMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenu");
     }
 }
