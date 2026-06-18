@@ -120,6 +120,8 @@ public class GameManager : MonoBehaviour
 
             intruderRoom = -1;
 
+            ShuffleLocks();
+
             statusText.text =
                 "Door locked successfully!";
         }
@@ -161,5 +163,24 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public RectTransform[] Locks;
+
+    public void ShuffleLocks()
+    {
+        for (int i = 0; i < Locks.Length; i++)
+        {
+            int randomIndex = Random.Range(i, Locks.Length);
+
+            RectTransform temp = Locks[i];
+            Locks[i] = Locks[randomIndex];
+            Locks[randomIndex] = temp;
+        }
+
+        for (int i = 0; i < Locks.Length; i++)
+        {
+            Locks[i].SetSiblingIndex(i);
+        }
     }
 }
