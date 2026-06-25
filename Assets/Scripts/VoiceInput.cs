@@ -13,16 +13,16 @@ public class VoiceInput : MonoBehaviour
         Dictionary<string, System.Action> commands =
             new Dictionary<string, System.Action>();
 
-        commands.Add("lock 1",
+        commands.Add("lock warehouse",
             () => gameManager.TryLockRoom(0));
 
-        commands.Add("lock 2",
+        commands.Add("lock hallway",
             () => gameManager.TryLockRoom(1));
 
-        commands.Add("lock 3",
+        commands.Add("lock bathroom",
             () => gameManager.TryLockRoom(2));
 
-        commands.Add("lock 4",
+        commands.Add("lock alley",
             () => gameManager.TryLockRoom(3));
 
         recognizer =
@@ -61,4 +61,13 @@ public class VoiceInput : MonoBehaviour
     {
         recognizer?.Dispose();
     }
+
+    public void ForceStopListening()
+{
+    if (recognizer != null && recognizer.IsRunning)
+    {
+        recognizer.Stop();
+        Debug.Log("Voice forcibly stopped");
+    }
+}
 }

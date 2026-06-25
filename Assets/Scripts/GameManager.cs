@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
         StartCoroutine(RandomIntruders());
     }
 
+    public float lockShuffleInterval = 2f;
+    private float lockShuffleTimer;
     private void Update()
     {
         if (gameEnded)
@@ -52,6 +54,13 @@ public class GameManager : MonoBehaviour
 
         timerText.text =
             "Time: " + Mathf.CeilToInt(surviveTime);
+
+        lockShuffleTimer += Time.deltaTime;
+        if (lockShuffleTimer >= lockShuffleInterval)
+        {
+            ShuffleLocks();
+            lockShuffleTimer = 0f;
+        }
 
         if (surviveTime <= 0)
         {
@@ -120,7 +129,7 @@ public class GameManager : MonoBehaviour
 
             intruderRoom = -1;
 
-            ShuffleLocks();
+            ShuffleCameras();
 
             statusText.text =
                 "Door locked successfully!";
@@ -145,11 +154,12 @@ public class GameManager : MonoBehaviour
     }
 
     public GameObject LosePanel;
-
+    public VoiceInput voiceInput;
     public void LoseGame()
     {
         gameEnded = true;
         LosePanel.SetActive(true);
+        voiceInput.ForceStopListening();
         Time.timeScale = 0f;
     }
 
@@ -181,6 +191,31 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < Locks.Length; i++)
         {
             Locks[i].SetSiblingIndex(i);
+        }
+    }
+
+    public RectTransform[] cameraScreens;
+
+    public void ShuffleCameras()
+    {
+        for (int i = 0; i < cameraScreens.Length; i++)
+        {
+            int randomIndex =
+                Random.Range(i, cameraScreens.Length);
+
+            RectTransform temp =
+                cameraScreens[i];
+
+            cameraScreens[i] =
+                cameraScreens[randomIndex];
+
+            cameraScreens[randomIndex] =
+                temp;
+        }
+
+        for (int i = 0; i < cameraScreens.Length; i++)
+        {
+            cameraScreens[i].SetSiblingIndex(i);
         }
     }
 }
